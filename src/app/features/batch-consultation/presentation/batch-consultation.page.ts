@@ -3,8 +3,9 @@ import { Component, computed, DestroyRef, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { catchError, of, Subject, switchMap, tap } from 'rxjs';
-import { Batch, BatchFilters, BatchStatus, BatchStatusFilter, Page } from '../domain/batch';
+import { Batch, BatchDetail, BatchEntry, BatchFilters, BatchStatus, BatchStatusFilter, Page } from '../domain/batch';
 import { BatchApi } from '../data/batch-api';
+import { BatchEntryEditorComponent } from './batch-entry-editor.component';
 
 const pageSize = 10;
 const initialFilters: BatchFilters = {
@@ -37,7 +38,7 @@ function orderedRange(fromName: string, toName: string): ValidatorFn {
 
 @Component({
   selector: 'app-batch-consultation-page',
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, BatchEntryEditorComponent],
   templateUrl: './batch-consultation.page.html',
   styleUrl: './batch-consultation.page.scss'
 })
@@ -61,6 +62,11 @@ export class BatchConsultationPage {
   protected readonly actionError = signal<string | null>(null);
   protected readonly actionLoading = signal(false);
   protected readonly justificationOpen = signal(false);
+  protected readonly editorOpen = signal(false);
+  protected readonly editorMode = signal<'create' | 'edit' | 'view'>('create');
+  protected readonly editorEntries = signal<BatchEntry[]>([]);
+  protected readonly editorError = signal<string | null>(null);
+  protected readonly editorSaving = signal(false);
   protected readonly selectedBatch = computed(() => {
     const selected = this.selectedIds();
     return selected.size === 1 ? this.batches().find((batch) => selected.has(batch.id)) ?? null : null;
@@ -210,6 +216,71 @@ export class BatchConsultationPage {
 
   protected openJustification(): void {
     if (this.selectedBatch()) this.justificationOpen.set(true);
+  }
+
+  protected openCreate(): void {
+    this.editorMode.set('create');
+    this.editorEntries.set([]);
+    this.editorError.set(null);
+    this.editorOpen.set(true);
+  }
+
+  protected openSelected(mode: 'edit' | 'view'): void {
+    const batch = this.selectedBatch();
+    if (!batch || (mode === 'edit' && batch.status !== 'OPEN') || this.actionLoading()) return;
+    this.actionLoading.set(true);
+    this.editorError.set(null);
+    this.api.get(batch.id).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+      next: (detail: BatchDetail) => {
+        this.editorMode.set(mode);
+        this.editorEntries.set(detail.entries);
+        this.editorOpen.set(true);
+        this.actionLoading.set(false);
+      },
+      error: () => {
+        this.actionError.set('Não foi possível carregar os lançamentos do lote. Tente novamente.');
+        this.actionLoading.set(false);
+      }
+    });
+  }
+
+  protected saveEntries(entries: BatchEntry[]): void {
+    if (this.editorSaving() || entries.length === 0) return;
+    this.editorSaving.set(true);
+    this.editorError.set(null);
+    const batch = this.selectedBatch();
+    const saveRequest = this.editorMode() === 'create'
+      ? this.api.create({ entries })
+      : batch
+        ? this.api.update(batch.id, { entries })
+        : null;
+    if (!saveRequest) {
+      this.editorError.set('Não foi possível identificar o lote selecionado. Feche e tente novamente.');
+      this.editorSaving.set(false);
+      return;
+    }
+
+    saveRequest.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+      next: () => {
+        this.editorOpen.set(false);
+        this.editorSaving.set(false);
+        this.selectedIds.set(new Set());
+        this.actionMessage.set(this.editorMode() === 'create' ? 'Lote criado com sucesso.' : 'Lote alterado com sucesso.');
+        this.requestPage(this.page(), this.activeFilters());
+      },
+      error: (error: unknown) => {
+        this.editorError.set(error instanceof HttpErrorResponse && error.status === 409
+          ? 'Este lote deixou de estar aberto e não pode mais ser alterado. Atualize a consulta.'
+          : 'Não foi possível salvar o lote. Confira os lançamentos e tente novamente.');
+        this.editorSaving.set(false);
+      }
+    });
+  }
+
+  protected closeEditor(): void {
+    if (this.editorSaving()) return;
+    this.editorOpen.set(false);
+    this.editorError.set(null);
   }
 
   protected formatAmount(amountCents: number): string {

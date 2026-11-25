@@ -97,15 +97,15 @@
 - Inputs: `entries: BatchEntry[]`, `mode: 'create' | 'edit' | 'view'`, `saving: boolean`.
 - Output: `save: BatchEntry[]`, `cancel: void`.
 
-- [ ] Criar formulário reativo com conta corrente, valor em reais, histórico, estorno, documento, descrição, situação somente leitura e PA.
-- [ ] Consultar a conta após validação sintática e debounce de 400 ms; mostrar titular, conta não encontrada e falha de consulta separadamente.
-- [ ] Carregar opções de histórico e PA pelo `BatchApi`.
-- [ ] Apresentar o editor em um modal acessível, com título associado, fechamento por Escape e botão para cancelar.
-- [ ] Manter linhas em estado local até Salvar; adicionar, alterar, visualizar, excluir e duplicar uma linha selecionada.
-- [ ] Converter reais para centavos na saída e calcular o total usando centavos inteiros, subtraindo estornos.
-- [ ] Em modo `view`, tornar todos os campos e ações de edição somente leitura; em `edit`, iniciar com as linhas recebidas.
+- [x] Criar formulário reativo com conta corrente, valor em reais, histórico, estorno, documento, descrição, situação somente leitura e PA.
+- [x] Consultar a conta após validação sintática e debounce de 400 ms; mostrar titular, conta não encontrada e falha de consulta separadamente.
+- [x] Carregar opções de histórico e PA pelo `BatchApi`.
+- [x] Apresentar o editor em um modal acessível, com título associado, fechamento por Escape e botão para cancelar.
+- [x] Manter linhas em estado local até Salvar; adicionar, alterar, visualizar, excluir e duplicar uma linha selecionada.
+- [x] Converter reais para centavos na saída e calcular o total usando centavos inteiros, subtraindo estornos.
+- [x] Em modo `view`, tornar todos os campos e ações de edição somente leitura; em `edit`, iniciar com as linhas recebidas.
 - [ ] Conferir manualmente inclusão/alteração de linha, validações e total em reais; executar `git diff --check`.
-- [ ] Commit: `feat: adiciona editor de lançamentos`.
+- [x] Commit: `feat: adiciona editor de lançamentos`.
 
 ### Etapa 4: inclusão, alteração e visualização de lotes
 
@@ -117,13 +117,13 @@
 
 **Interfaces consumidas:** `BatchApi.get/create/update`; `BatchEntryEditorComponent`.
 
-- [ ] Adicionar as ações Incluir, Alterar e Visualizar; exigir seleção única para Alterar/Visualizar e permitir Alterar apenas para lote aberto.
-- [ ] Ao incluir, abrir o editor vazio; ao alterar/visualizar, carregar `GET /api/batches/:id` antes de abrir.
-- [ ] No modo incluir, chamar `create`; no modo alterar, chamar `update` com a lista completa de lançamentos.
-- [ ] Desabilitar salvamento sem lançamentos e durante requisição; mostrar erro da API e fechar o editor somente em sucesso.
-- [ ] Em sucesso, atualizar a página atual com os filtros ativos e limpar a seleção.
+- [x] Adicionar as ações Incluir, Alterar e Visualizar; exigir seleção única para Alterar/Visualizar e permitir Alterar apenas para lote aberto.
+- [x] Ao incluir, abrir o editor vazio; ao alterar/visualizar, carregar `GET /api/batches/:id` antes de abrir.
+- [x] No modo incluir, chamar `create`; no modo alterar, chamar `update` com a lista completa de lançamentos.
+- [x] Desabilitar salvamento sem lançamentos e durante requisição; mostrar erro da API e fechar o editor somente em sucesso.
+- [x] Em sucesso, atualizar a página atual com os filtros ativos e limpar a seleção.
 - [ ] Conferir manualmente incluir, alterar, visualizar, cancelamento sem salvar, erro 409 e preservação dos filtros.
-- [ ] Commit: `feat: integra cadastro e edição de lotes`.
+- [x] Commit: `feat: integra cadastro e edição de lotes`.
 
 ### Etapa 5: exclusão de lotes
 
