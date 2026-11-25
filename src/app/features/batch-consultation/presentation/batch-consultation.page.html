@@ -106,6 +106,10 @@
   }
 
   <div class="batch-actions" aria-label="Ações dos lotes">
+    <button type="button" class="button button-primary" [disabled]="actionLoading() || loading()" (click)="openCreate()">Incluir</button>
+    <button type="button" class="button" [disabled]="!selectedBatch() || selectedBatch()?.status !== 'OPEN' || actionLoading()" (click)="openSelected('edit')">Alterar</button>
+    <button type="button" class="button" [disabled]="!selectedBatch() || actionLoading()" (click)="openSelected('view')">Visualizar</button>
+    <button type="button" class="button" [disabled]="!selectedBatch() || selectedBatch()?.status !== 'OPEN' || actionLoading()" (click)="openDeleteConfirmation()">Excluir</button>
     <button type="button" class="button" [disabled]="!canConfirm() || actionLoading()" (click)="changeStatus('CONFIRMED')">Confirmar</button>
     <button type="button" class="button button-primary" [disabled]="!canSubmit() || actionLoading()" (click)="changeStatus('SUBMITTED')">Enviar</button>
     <button type="button" class="button" [disabled]="!selectedBatch() || actionLoading()" (click)="openJustification()">Visualizar justificativa</button>
@@ -182,4 +186,28 @@
       <button type="button" class="button button-primary" (click)="justificationOpen.set(false)">Fechar</button>
     </dialog>
   }
+
+  @if (editorOpen()) {
+    <app-batch-entry-editor
+      [entries]="editorEntries()"
+      [mode]="editorMode()"
+      [saving]="editorSaving()"
+      [apiError]="editorError()"
+      (save)="saveEntries($event)"
+      (cancel)="closeEditor()"
+    />
+  }
+
+  @if (deleteConfirmationOpen() && selectedBatch(); as batch) {
+    <dialog open aria-modal="true" aria-labelledby="delete-title" class="justification-dialog" (keydown.escape)="deleteConfirmationOpen.set(false)">
+      <h2 id="delete-title">Excluir lote {{ batch.id }}?</h2>
+      <p>Esta ação remove o lote e seus lançamentos do mock.</p>
+      @if (actionError(); as error) { <p class="alert alert-error" role="alert">{{ error }}</p> }
+      <div class="batch-actions">
+        <button type="button" class="button" [disabled]="actionLoading()" (click)="deleteConfirmationOpen.set(false)">Cancelar</button>
+        <button type="button" class="button button-primary" [disabled]="actionLoading()" (click)="deleteSelected()">{{ actionLoading() ? 'Excluindo…' : 'Confirmar exclusão' }}</button>
+      </div>
+    </dialog>
+  }
+
 </section>
