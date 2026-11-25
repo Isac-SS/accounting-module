@@ -1,0 +1,53 @@
+:host { display: block; }
+.consultation-card { display: grid; gap: 16px; padding: 18px; border: 1px solid #e2e8e6; border-radius: 10px; background: #fff; box-shadow: 0 2px 8px rgb(20 50 45 / 4%); }
+.filter-panel { padding: 14px 16px; border: 1px solid #e2e8e6; border-radius: 8px; }
+.filter-heading { display: flex; justify-content: space-between; align-items: flex-start; }
+.filter-heading h2 { margin: 0; color: #263330; font-size: 15px; }
+.filter-heading p { margin: 4px 0 0; color: #788582; font-size: 11px; font-weight: 650; letter-spacing: .055em; text-transform: uppercase; }
+.toggle-filters { display: grid; width: 30px; height: 30px; place-items: center; border: 1px solid #e2e8e6; border-radius: 6px; color: #17645e; background: #fff; cursor: pointer; }
+.filters { display: grid; grid-template-columns: minmax(240px, .85fr) minmax(400px, 1.15fr); gap: 18px 28px; margin-top: 18px; }
+.filter-column { display: grid; align-content: start; gap: 13px; }
+.field { display: grid; min-width: 0; gap: 5px; }
+.field label, .range legend { color: #485552; font-size: 12px; font-weight: 600; }
+.field input, .field select { width: 100%; min-height: 34px; padding: 5px 9px; border: 1px solid #d6dfdc; border-radius: 5px; color: #263330; background: #fff; font: inherit; font-size: 13px; }
+.field input:focus, .field select:focus { outline: 2px solid #b9dfd6; border-color: #17645e; }
+.range { display: grid; grid-template-columns: 82px repeat(2, minmax(90px, 1fr)); align-items: end; gap: 6px 10px; margin: 0; padding: 0; border: 0; }
+.range legend { float: left; width: 82px; padding: 0 0 8px; }
+.range .field label { color: #17645e; font-weight: 500; }
+.range-error { grid-column: 2 / -1; color: #a23535; font-size: 11px; }
+.range-invalid input { border-color: #a23535; }
+.filter-actions { grid-column: 1 / -1; display: flex; justify-content: flex-end; gap: 8px; }
+.button { min-height: 34px; padding: 6px 14px; border: 1px solid #d6dfdc; border-radius: 5px; color: #263330; background: #fff; font: inherit; font-size: 12px; font-weight: 650; text-transform: uppercase; cursor: pointer; }
+.button:hover:not(:disabled) { border-color: #17645e; }
+.button:disabled { opacity: .55; cursor: not-allowed; }
+.button-primary { border-color: #17645e; color: #fff; background: #17645e; }
+.alert { margin: 0; padding: 11px 14px; border-radius: 6px; font-size: 13px; }
+.alert-error { color: #8e2929; background: #fceeee; }
+.results-heading { display: flex; justify-content: flex-end; color: #687572; font-size: 12px; }
+.table-container { position: relative; overflow-x: auto; border: 1px solid #e2e8e6; border-radius: 7px; }
+table { width: 100%; border-collapse: collapse; font-size: 12px; }
+th { padding: 10px 9px; color: #fff; background: #174846; font-weight: 600; text-align: left; white-space: nowrap; }
+td { padding: 9px; border-bottom: 1px solid #e8edeb; color: #35413e; white-space: nowrap; }
+tbody tr:hover { background: #f6faf9; }
+.align-right { text-align: right; }
+.align-center { text-align: center; }
+.status { display: inline-block; padding: 4px 8px; border-radius: 999px; font-size: 11px; font-weight: 650; }
+.status-open { color: #76560c; background: #fff4d6; }
+.status-submitted { color: #174f84; background: #e5f1fc; }
+.status-confirmed { color: #246347; background: #e3f4eb; }
+.empty-row { height: 88px; color: #788582; text-align: center; }
+.loading-overlay { position: absolute; z-index: 1; inset: 0; display: grid; place-items: center; color: #17645e; background: rgb(255 255 255 / 76%); font-weight: 650; }
+.pagination { display: flex; justify-content: center; align-items: center; gap: 8px; }
+.pagination button, .pagination [aria-current] { display: grid; width: 30px; height: 30px; place-items: center; border: 1px solid #d6dfdc; border-radius: 50%; color: #263330; background: #fff; font: inherit; font-weight: 600; }
+.pagination button { cursor: pointer; }
+.pagination button:disabled { opacity: .4; cursor: not-allowed; }
+.pagination [aria-current] { border-color: #17645e; color: #fff; background: #17645e; }
+.page-count { color: #788582; font-size: 12px; }
+.visually-hidden { position: absolute; overflow: hidden; width: 1px; height: 1px; clip: rect(0, 0, 0, 0); white-space: nowrap; }
+@media (max-width: 850px) { .filters { grid-template-columns: 1fr; } }
+@media (max-width: 560px) {
+  .consultation-card { gap: 12px; padding: 12px; }
+  .filter-panel { padding: 12px; }
+  .range { grid-template-columns: 62px repeat(2, minmax(80px, 1fr)); gap-inline: 6px; }
+  .range legend { width: 62px; }
+}

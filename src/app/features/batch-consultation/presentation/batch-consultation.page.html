@@ -1,0 +1,162 @@
+<section class="consultation-card">
+  <section class="filter-panel" aria-labelledby="filter-title">
+    <header class="filter-heading">
+      <div>
+        <h2 id="filter-title">Filtros</h2>
+        <p>Pesquisar lotes de créditos e débitos</p>
+      </div>
+      <button
+        type="button"
+        class="toggle-filters"
+        [attr.aria-expanded]="filtersExpanded()"
+        aria-controls="filter-form"
+        [attr.aria-label]="filtersExpanded() ? 'Recolher filtros' : 'Expandir filtros'"
+        (click)="filtersExpanded.update((expanded) => !expanded)"
+      >
+        <span aria-hidden="true">{{ filtersExpanded() ? '−' : '+' }}</span>
+      </button>
+    </header>
+
+    @if (filtersExpanded()) {
+      <form id="filter-form" class="filters" [formGroup]="form" (ngSubmit)="submit()" novalidate>
+        <div class="filter-column">
+          <div class="field">
+            <label for="responsible-institution">Instituição responsável</label>
+            <input id="responsible-institution" type="text" formControlName="responsibleInstitution" maxlength="60" />
+          </div>
+          <div class="field">
+            <label for="institution">Instituição</label>
+            <input id="institution" type="text" formControlName="institution" maxlength="60" />
+          </div>
+          <div class="field">
+            <label for="status">Situação do lote</label>
+            <select id="status" formControlName="status">
+              <option value="ALL">Todas</option>
+              <option value="OPEN">Aberto</option>
+              <option value="SUBMITTED">Enviado</option>
+              <option value="CONFIRMED">Confirmado</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="filter-column">
+          <fieldset class="range" [class.range-invalid]="form.hasError('rangeOrder_idFrom') && (form.controls.idFrom.touched || form.controls.idTo.touched)">
+            <legend>ID do lote</legend>
+            <div class="field">
+              <label for="id-from">De</label>
+              <input id="id-from" type="number" min="1" formControlName="idFrom" />
+            </div>
+            <div class="field">
+              <label for="id-to">Até</label>
+              <input id="id-to" type="number" min="1" formControlName="idTo" />
+            </div>
+            @if (form.hasError('rangeOrder_idFrom') && (form.controls.idFrom.touched || form.controls.idTo.touched)) {
+              <span class="range-error">O valor inicial deve ser menor ou igual ao final.</span>
+            }
+          </fieldset>
+
+          <fieldset class="range" [class.range-invalid]="form.hasError('rangeOrder_amountFrom') && (form.controls.amountFrom.touched || form.controls.amountTo.touched)">
+            <legend>Valor do lote (R$)</legend>
+            <div class="field">
+              <label for="amount-from">De</label>
+              <input id="amount-from" type="number" min="0" step="0.01" formControlName="amountFrom" />
+            </div>
+            <div class="field">
+              <label for="amount-to">Até</label>
+              <input id="amount-to" type="number" min="0" step="0.01" formControlName="amountTo" />
+            </div>
+            @if (form.hasError('rangeOrder_amountFrom') && (form.controls.amountFrom.touched || form.controls.amountTo.touched)) {
+              <span class="range-error">O valor inicial deve ser menor ou igual ao final.</span>
+            }
+          </fieldset>
+
+          <fieldset class="range date-range" [class.range-invalid]="form.hasError('rangeOrder_entryDateFrom') && (form.controls.entryDateFrom.touched || form.controls.entryDateTo.touched)">
+            <legend>Data de entrada</legend>
+            <div class="field">
+              <label for="entry-date-from">De</label>
+              <input id="entry-date-from" type="date" formControlName="entryDateFrom" />
+            </div>
+            <div class="field">
+              <label for="entry-date-to">Até</label>
+              <input id="entry-date-to" type="date" formControlName="entryDateTo" />
+            </div>
+            @if (form.hasError('rangeOrder_entryDateFrom') && (form.controls.entryDateFrom.touched || form.controls.entryDateTo.touched)) {
+              <span class="range-error">A data inicial deve ser anterior ou igual à final.</span>
+            }
+          </fieldset>
+        </div>
+
+        <div class="filter-actions">
+          <button type="button" class="button" (click)="clear()">Limpar</button>
+          <button type="submit" class="button button-primary" [disabled]="loading()">Pesquisar</button>
+        </div>
+      </form>
+    }
+  </section>
+
+  @if (errorMessage(); as error) {
+    <p class="alert alert-error" role="alert">{{ error }}</p>
+  }
+
+  <div class="results-heading" aria-live="polite">
+    <span>{{ total() }} {{ total() === 1 ? 'lote encontrado' : 'lotes encontrados' }}</span>
+  </div>
+
+  <div class="table-container" [attr.aria-busy]="loading()">
+    @if (loading()) {
+      <div class="loading-overlay" role="status">Carregando lotes…</div>
+    }
+    <table>
+      <caption class="visually-hidden">Lotes de créditos e débitos</caption>
+      <thead>
+        <tr>
+          <th scope="col">ID lote</th>
+          <th scope="col">Data de entrada</th>
+          <th scope="col" class="align-right">Valor</th>
+          <th scope="col" class="align-center">Lançamentos</th>
+          <th scope="col">Usuário de registro</th>
+          <th scope="col">Usuário de aprovação</th>
+          <th scope="col">Situação</th>
+          <th scope="col">Data/hora da situação</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (batch of batches(); track batch.id) {
+          <tr>
+            <td>{{ batch.id }}</td>
+            <td>{{ formatDate(batch.entryDate) }}</td>
+            <td class="align-right">{{ formatAmount(batch.amountCents) }}</td>
+            <td class="align-center">{{ batch.entryCount }}</td>
+            <td>{{ batch.createdBy }}</td>
+            <td>{{ batch.approvedBy ?? '—' }}</td>
+            <td><span class="status" [class.status-open]="batch.status === 'OPEN'" [class.status-submitted]="batch.status === 'SUBMITTED'" [class.status-confirmed]="batch.status === 'CONFIRMED'">{{ visibleStatuses[batch.status] }}</span></td>
+            <td>{{ formatDateTime(batch.statusChangedAt) }}</td>
+          </tr>
+        } @empty {
+          <tr>
+            <td colspan="8" class="empty-row">
+              @if (loading()) {
+                Aguarde enquanto os lotes são carregados.
+              } @else if (hasSearched()) {
+                Nenhum lote encontrado para os filtros informados.
+              } @else {
+                Informe os filtros e selecione Pesquisar.
+              }
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  @if (totalPages() > 1) {
+    <nav class="pagination" aria-label="Paginação dos lotes">
+      <button type="button" aria-label="Primeira página" [disabled]="page() === 1 || loading()" (click)="goToPage(1)">«</button>
+      <button type="button" aria-label="Página anterior" [disabled]="page() === 1 || loading()" (click)="goToPage(page() - 1)">‹</button>
+      <span aria-current="page" [attr.aria-label]="'Página ' + page() + ' de ' + totalPages()">{{ page() }}</span>
+      <button type="button" aria-label="Próxima página" [disabled]="page() === totalPages() || loading()" (click)="goToPage(page() + 1)">›</button>
+      <button type="button" aria-label="Última página" [disabled]="page() === totalPages() || loading()" (click)="goToPage(totalPages())">»</button>
+      <span class="page-count">de {{ totalPages() }}</span>
+    </nav>
+  }
+</section>
