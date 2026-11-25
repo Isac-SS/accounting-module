@@ -1,0 +1,33 @@
+<div class="app-shell">
+  <aside class="sidebar" aria-label="Navegação principal">
+    <a class="brand" routerLink="/" aria-label="Página inicial do módulo contábil">
+      <span class="brand-mark" aria-hidden="true">C</span>
+      <span>Gestão contábil</span>
+    </a>
+
+    <div class="nav-section-label">Módulos</div>
+    <nav>
+      <a
+        class="nav-link"
+        routerLink="/contabilidade/outros-creditos-debitos"
+        routerLinkActive="active"
+        ariaCurrentWhenActive="page"
+      >
+        <span class="nav-icon" aria-hidden="true">▤</span>
+        <span>Contábil</span>
+      </a>
+    </nav>
+    <div class="sidebar-footer">Sistema de gestão</div>
+  </aside>
+
+  <div class="workspace">
+    <header class="topbar"><span>Área de trabalho</span></header>
+    <main class="page-content">
+      <nav class="breadcrumb" aria-label="Trilha de navegação">
+        <a routerLink="/">Início</a><span aria-hidden="true">/</span><span>{{ pageTitle() }}</span>
+      </nav>
+      <h1>{{ pageTitle() }}</h1>
+      <ng-content />
+    </main>
+  </div>
+</div>
