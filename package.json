@@ -4,6 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
+    "mock": "bun --watch server/index.ts",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
