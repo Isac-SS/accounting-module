@@ -4,7 +4,7 @@
 
 **Objetivo:** permitir incluir, consultar, alterar e excluir lotes abertos com seus lançamentos, usando o mock Bun e a tela Angular existentes.
 
-**Arquitetura:** manter os tipos do domínio e chamadas HTTP em `domain` e `data`; o mock Bun valida e calcula os dados derivados do lote. Um componente standalone edita lançamentos localmente e a página de consulta o usa nos modos incluir, alterar e visualizar, além de confirmar exclusões.
+**Arquitetura:** manter os tipos do domínio e chamadas HTTP em `domain` e `data`; no mock Bun, separar fixtures em `server/data`, regras de validação e cálculo em `server/domain`, rotas em `server/routes` e inicialização em `server/index.ts`. Um componente standalone edita lançamentos localmente e a página de consulta o usa nos modos incluir, alterar e visualizar, além de confirmar exclusões.
 
 **Tecnologias:** Angular standalone, Reactive Forms, signals, HttpClient, RxJS, Bun.
 
@@ -60,26 +60,29 @@
 - `BatchSaveRequest`: `{ entries: BatchEntry[] }`.
 - Métodos de `BatchApi`: `get(id): Observable<BatchDetail>`, `create(body): Observable<BatchDetail>`, `update(id, body): Observable<BatchDetail>`, `delete(id): Observable<void>`, `getCurrentAccount(number): Observable<CurrentAccount>`, `getEntryOptions(): Observable<BatchEntryOptions>`.
 
-- [ ] Adicionar os tipos mantendo `Batch` como o modelo compacto usado pela listagem.
-- [ ] Implementar os métodos HTTP: `GET /api/batches/:id`, `POST /api/batches`, `PUT /api/batches/:id`, `DELETE /api/batches/:id`, `GET /api/current-accounts/:number` e `GET /api/batch-entry-options`.
-- [ ] Conferir as assinaturas e rotas com `git diff --check`; não alterar ainda a interface da página.
-- [ ] Commit: `feat: define API de manutenção de lotes`.
+- [x] Adicionar os tipos mantendo `Batch` como o modelo compacto usado pela listagem.
+- [x] Implementar os métodos HTTP: `GET /api/batches/:id`, `POST /api/batches`, `PUT /api/batches/:id`, `DELETE /api/batches/:id`, `GET /api/current-accounts/:number` e `GET /api/batch-entry-options`.
+- [x] Conferir as assinaturas e rotas com `git diff --check`; não alterar ainda a interface da página.
+- [x] Commit: `feat: define API de manutenção de lotes`.
 
 ### Etapa 2: mock de lançamentos e operações de lote
 
 **Arquivos:**
 
-- Alterar: `server/index.ts`
+- Alterar: `server/index.ts` (inicialização do servidor)
+- Criar: `server/data/mock-data.ts` (fixtures estáticas e estado em memória)
+- Criar: `server/domain/batch-rules.ts` (validação, cálculo e projeção de resumo)
+- Criar: `server/routes/request-handler.ts` (rotas HTTP)
 
 **Interfaces consumidas:** tipos da Etapa 1; manter as rotas existentes de consulta e situação.
 
-- [ ] Incluir dados estáveis de contas, históricos e PAs; expor `GET /api/current-accounts/:number` e `GET /api/batch-entry-options`.
-- [ ] Manter detalhes de lançamentos junto aos lotes em memória, com itens determinísticos para os dados iniciais; `GET /api/batches` continua respondendo apenas os resumos.
-- [ ] Implementar `GET /api/batches/:id`, `POST /api/batches`, `PUT /api/batches/:id` e `DELETE /api/batches/:id`.
-- [ ] Validar conta existente, valor positivo, lista não vazia e campos obrigatórios. Recalcular `amountCents` com estornos e `entryCount` no servidor.
-- [ ] Para `PUT` e `DELETE`, retornar 409 quando o lote não estiver `OPEN`; validar antes de mutar para não deixar alteração parcial.
-- [ ] Conferir manualmente as rotas com conta válida/inválida, criação, leitura, alteração, exclusão e tentativa de alterar lote não aberto; conferir também o total com estorno.
-- [ ] Commit: `feat: implementa operações de lote no mock`.
+- [x] Incluir dados estáveis de contas, históricos e PAs; expor `GET /api/current-accounts/:number` e `GET /api/batch-entry-options`.
+- [x] Manter detalhes de lançamentos junto aos lotes em memória, com itens determinísticos para os dados iniciais; `GET /api/batches` continua respondendo apenas os resumos.
+- [x] Implementar `GET /api/batches/:id`, `POST /api/batches`, `PUT /api/batches/:id` e `DELETE /api/batches/:id`.
+- [x] Validar conta existente, valor positivo, lista não vazia e campos obrigatórios. Recalcular `amountCents` com estornos e `entryCount` no servidor.
+- [x] Para `PUT` e `DELETE`, retornar 409 quando o lote não estiver `OPEN`; validar antes de mutar para não deixar alteração parcial.
+- [x] Conferir manualmente as rotas com conta válida/inválida, criação, leitura, alteração, exclusão e tentativa de alterar lote não aberto; conferir também o total com estorno.
+- [x] Commit: `feat: implementa operações de lote no mock`.
 
 ### Etapa 3: editor de lançamentos
 
