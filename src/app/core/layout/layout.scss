@@ -1,0 +1,26 @@
+:host { display: block; min-height: 100vh; }
+.app-shell { min-height: 100vh; }
+.sidebar { position: fixed; inset: 0 auto 0 0; display: flex; flex-direction: column; width: 248px; padding: 24px 16px 16px; color: #d9e6e5; background: #123c3b; }
+.brand { display: flex; align-items: center; gap: 11px; margin: 0 8px 42px; color: #fff; font-size: 16px; font-weight: 650; text-decoration: none; }
+.brand-mark { display: grid; width: 34px; height: 34px; place-items: center; border-radius: 9px; color: #123c3b; background: #b9dfd6; font-weight: 800; }
+.nav-section-label { margin: 0 10px 10px; color: #9db9b6; font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+.nav-link { display: flex; align-items: center; gap: 12px; padding: 11px 12px; border-radius: 7px; color: #d9e6e5; font-size: 14px; text-decoration: none; }
+.nav-link:hover, .nav-link.active { color: #fff; background: #245553; }
+.nav-icon { width: 20px; text-align: center; }
+.sidebar-footer { margin-top: auto; padding: 14px 10px 0; border-top: 1px solid #315b59; color: #9db9b6; font-size: 12px; }
+.workspace { min-height: 100vh; margin-left: 248px; }
+.topbar { display: flex; height: 64px; align-items: center; padding: 0 36px; border-bottom: 1px solid #e4e9e8; color: #647270; background: #fff; font-size: 13px; }
+.page-content { max-width: 1440px; margin: 0 auto; padding: 32px 36px; }
+.breadcrumb { display: flex; gap: 9px; margin-bottom: 13px; color: #788582; font-size: 12px; }
+.breadcrumb a { color: inherit; text-decoration: none; }
+.breadcrumb a:hover { color: #17645e; text-decoration: underline; }
+h1 { margin: 0 0 28px; color: #202b29; font-size: 25px; font-weight: 650; letter-spacing: -.02em; }
+@media (max-width: 700px) {
+  .sidebar { position: static; width: auto; padding: 12px 16px; }
+  .brand { margin: 0 0 12px; }
+  .nav-section-label, .sidebar-footer { display: none; }
+  .nav-link { padding: 9px 10px; }
+  .workspace { margin-left: 0; }
+  .topbar { height: 48px; padding: 0 20px; }
+  .page-content { padding: 24px 20px; }
+}
