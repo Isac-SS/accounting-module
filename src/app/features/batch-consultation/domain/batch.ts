@@ -15,6 +15,39 @@ export interface Batch {
   justification: string | null;
 }
 
+export type BatchEntryStatus = 'PENDING';
+
+export interface BatchEntry {
+  id: number;
+  accountNumber: string;
+  accountHolder: string;
+  amountCents: number;
+  history: string;
+  reversal: boolean;
+  document: string;
+  description: string;
+  status: BatchEntryStatus;
+  servicePoint: string;
+}
+
+export interface BatchDetail extends Batch {
+  entries: BatchEntry[];
+}
+
+export interface BatchEntryOptions {
+  histories: string[];
+  servicePoints: string[];
+}
+
+export interface CurrentAccount {
+  number: string;
+  holder: string;
+}
+
+export interface BatchSaveRequest {
+  entries: BatchEntry[];
+}
+
 export interface BatchFilters {
   responsibleInstitution: string;
   institution: string;

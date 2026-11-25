@@ -1,7 +1,16 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Batch, BatchFilters, BatchStatus, Page } from '../domain/batch';
+import {
+  Batch,
+  BatchDetail,
+  BatchEntryOptions,
+  BatchFilters,
+  BatchSaveRequest,
+  BatchStatus,
+  CurrentAccount,
+  Page
+} from '../domain/batch';
 
 @Injectable({ providedIn: 'root' })
 export class BatchApi {
@@ -30,5 +39,29 @@ export class BatchApi {
 
   updateStatus(ids: number[], status: Exclude<BatchStatus, 'OPEN'>): Observable<{ updated: number }> {
     return this.http.patch<{ updated: number }>('/api/batches/status', { ids, status });
+  }
+
+  get(id: number): Observable<BatchDetail> {
+    return this.http.get<BatchDetail>(`/api/batches/${id}`);
+  }
+
+  create(body: BatchSaveRequest): Observable<BatchDetail> {
+    return this.http.post<BatchDetail>('/api/batches', body);
+  }
+
+  update(id: number, body: BatchSaveRequest): Observable<BatchDetail> {
+    return this.http.put<BatchDetail>(`/api/batches/${id}`, body);
+  }
+
+  delete(id: number): Observable<void> {
+    return this.http.delete<void>(`/api/batches/${id}`);
+  }
+
+  getCurrentAccount(number: string): Observable<CurrentAccount> {
+    return this.http.get<CurrentAccount>(`/api/current-accounts/${encodeURIComponent(number)}`);
+  }
+
+  getEntryOptions(): Observable<BatchEntryOptions> {
+    return this.http.get<BatchEntryOptions>('/api/batch-entry-options');
   }
 }

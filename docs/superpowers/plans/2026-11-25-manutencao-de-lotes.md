@@ -42,7 +42,7 @@
 - Adicionar: `docs/superpowers/specs/2026-11-25-desenho-manutencao-lotes.md`
 - Adicionar: `docs/superpowers/plans/2026-11-25-manutencao-de-lotes.md`
 
-- [ ] Commit: `docs: registra desenho e plano de manutenção de lotes`.
+- [x] Commit: `docs: registra desenho e plano de manutenção de lotes`.
 
 ### Etapa 1: modelos e API cliente
 
