@@ -23,6 +23,8 @@
 .button-primary { border-color: #17645e; color: #fff; background: #17645e; }
 .alert { margin: 0; padding: 11px 14px; border-radius: 6px; font-size: 13px; }
 .alert-error { color: #8e2929; background: #fceeee; }
+.alert-success { color: #246347; background: #e3f4eb; }
+.batch-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px; }
 .results-heading { display: flex; justify-content: flex-end; color: #687572; font-size: 12px; }
 .table-container { position: relative; overflow-x: auto; border: 1px solid #e2e8e6; border-radius: 7px; }
 table { width: 100%; border-collapse: collapse; font-size: 12px; }
@@ -44,6 +46,10 @@ tbody tr:hover { background: #f6faf9; }
 .pagination [aria-current] { border-color: #17645e; color: #fff; background: #17645e; }
 .page-count { color: #788582; font-size: 12px; }
 .visually-hidden { position: absolute; overflow: hidden; width: 1px; height: 1px; clip: rect(0, 0, 0, 0); white-space: nowrap; }
+.justification-dialog { width: min(420px, calc(100vw - 32px)); padding: 22px; border: 1px solid #d6dfdc; border-radius: 8px; color: #263330; box-shadow: 0 12px 38px rgb(20 50 45 / 20%); }
+.justification-dialog::backdrop { background: rgb(20 35 32 / 35%); }
+.justification-dialog h2 { margin: 0 0 12px; font-size: 17px; }
+.justification-dialog p { min-height: 32px; margin: 0 0 20px; color: #485552; white-space: pre-wrap; }
 @media (max-width: 850px) { .filters { grid-template-columns: 1fr; } }
 @media (max-width: 560px) {
   .consultation-card { gap: 12px; padding: 12px; }
