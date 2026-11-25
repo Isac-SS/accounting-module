@@ -56,6 +56,26 @@ export class BatchConsultationPage {
   protected readonly hasSearched = signal(false);
   protected readonly errorMessage = signal<string | null>(null);
   protected readonly filtersExpanded = signal(true);
+  protected readonly selectedIds = signal<ReadonlySet<number>>(new Set());
+  protected readonly actionMessage = signal<string | null>(null);
+  protected readonly actionError = signal<string | null>(null);
+  protected readonly actionLoading = signal(false);
+  protected readonly justificationOpen = signal(false);
+  protected readonly selectedBatch = computed(() => {
+    const selected = this.selectedIds();
+    return selected.size === 1 ? this.batches().find((batch) => selected.has(batch.id)) ?? null : null;
+  });
+  protected readonly canSubmit = computed(() => {
+    const selected = this.batches().filter((batch) => this.selectedIds().has(batch.id));
+    return selected.length > 0 && selected.every((batch) => batch.status === 'OPEN');
+  });
+  protected readonly canConfirm = computed(() => {
+    const selected = this.batches().filter((batch) => this.selectedIds().has(batch.id));
+    return selected.length > 0 && selected.every((batch) => batch.status === 'SUBMITTED');
+  });
+  protected readonly allVisibleSelected = computed(() =>
+    this.batches().length > 0 && this.batches().every((batch) => this.selectedIds().has(batch.id))
+  );
   protected readonly totalPages = computed(() => Math.max(1, Math.ceil(this.total() / pageSize)));
   protected readonly visibleStatuses = statusLabels;
 
@@ -141,6 +161,57 @@ export class BatchConsultationPage {
     this.requestPage(nextPage, this.activeFilters());
   }
 
+  protected toggleBatch(id: number, checked: boolean): void {
+    this.selectedIds.update((current) => {
+      const next = new Set(current);
+      if (checked) next.add(id);
+      else next.delete(id);
+      return next;
+    });
+    this.actionMessage.set(null);
+    this.actionError.set(null);
+  }
+
+  protected toggleVisible(checked: boolean): void {
+    this.selectedIds.update((current) => {
+      const next = new Set(current);
+      for (const batch of this.batches()) {
+        if (checked) next.add(batch.id);
+        else next.delete(batch.id);
+      }
+      return next;
+    });
+    this.actionMessage.set(null);
+    this.actionError.set(null);
+  }
+
+  protected changeStatus(status: Exclude<BatchStatus, 'OPEN'>): void {
+    const ids = [...this.selectedIds()];
+    if (!ids.length || this.actionLoading()) return;
+
+    this.actionLoading.set(true);
+    this.actionMessage.set(null);
+    this.actionError.set(null);
+    this.api.updateStatus(ids, status).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+      next: () => {
+        this.selectedIds.set(new Set());
+        this.actionMessage.set(status === 'SUBMITTED' ? 'Lote(s) enviado(s) com sucesso.' : 'Lote(s) confirmado(s) com sucesso.');
+        this.requestPage(this.page(), this.activeFilters());
+        this.actionLoading.set(false);
+      },
+      error: (error: unknown) => {
+        this.actionError.set(error instanceof HttpErrorResponse && error.status === 409
+          ? 'A situação de um ou mais lotes mudou. Atualize a consulta e tente novamente.'
+          : 'Não foi possível atualizar a situação dos lotes. Tente novamente.');
+        this.actionLoading.set(false);
+      }
+    });
+  }
+
+  protected openJustification(): void {
+    if (this.selectedBatch()) this.justificationOpen.set(true);
+  }
+
   protected formatAmount(amountCents: number): string {
     return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(amountCents / 100);
   }
@@ -156,6 +227,7 @@ export class BatchConsultationPage {
 
   private requestPage(requestedPage: number, filters: BatchFilters): void {
     this.page.set(requestedPage);
+    this.selectedIds.set(new Set());
     this.requests.next({ filters, page: requestedPage });
   }
 

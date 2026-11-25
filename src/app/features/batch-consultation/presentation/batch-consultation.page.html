@@ -98,6 +98,19 @@
     <p class="alert alert-error" role="alert">{{ error }}</p>
   }
 
+  @if (actionMessage(); as message) {
+    <p class="alert alert-success" role="status">{{ message }}</p>
+  }
+  @if (actionError(); as error) {
+    <p class="alert alert-error" role="alert">{{ error }}</p>
+  }
+
+  <div class="batch-actions" aria-label="Ações dos lotes">
+    <button type="button" class="button" [disabled]="!canConfirm() || actionLoading()" (click)="changeStatus('CONFIRMED')">Confirmar</button>
+    <button type="button" class="button button-primary" [disabled]="!canSubmit() || actionLoading()" (click)="changeStatus('SUBMITTED')">Enviar</button>
+    <button type="button" class="button" [disabled]="!selectedBatch() || actionLoading()" (click)="openJustification()">Visualizar justificativa</button>
+  </div>
+
   <div class="results-heading" aria-live="polite">
     <span>{{ total() }} {{ total() === 1 ? 'lote encontrado' : 'lotes encontrados' }}</span>
   </div>
@@ -110,6 +123,7 @@
       <caption class="visually-hidden">Lotes de créditos e débitos</caption>
       <thead>
         <tr>
+          <th scope="col" class="align-center"><input type="checkbox" aria-label="Selecionar todos os lotes desta página" [checked]="allVisibleSelected()" [disabled]="loading() || actionLoading() || batches().length === 0" (change)="toggleVisible($any($event.target).checked)" /></th>
           <th scope="col">ID lote</th>
           <th scope="col">Data de entrada</th>
           <th scope="col" class="align-right">Valor</th>
@@ -123,6 +137,7 @@
       <tbody>
         @for (batch of batches(); track batch.id) {
           <tr>
+            <td class="align-center"><input type="checkbox" [attr.aria-label]="'Selecionar lote ' + batch.id" [checked]="selectedIds().has(batch.id)" [disabled]="loading() || actionLoading()" (change)="toggleBatch(batch.id, $any($event.target).checked)" /></td>
             <td>{{ batch.id }}</td>
             <td>{{ formatDate(batch.entryDate) }}</td>
             <td class="align-right">{{ formatAmount(batch.amountCents) }}</td>
@@ -134,7 +149,7 @@
           </tr>
         } @empty {
           <tr>
-            <td colspan="8" class="empty-row">
+            <td colspan="9" class="empty-row">
               @if (loading()) {
                 Aguarde enquanto os lotes são carregados.
               } @else if (hasSearched()) {
@@ -158,5 +173,13 @@
       <button type="button" aria-label="Última página" [disabled]="page() === totalPages() || loading()" (click)="goToPage(totalPages())">»</button>
       <span class="page-count">de {{ totalPages() }}</span>
     </nav>
+  }
+
+  @if (justificationOpen() && selectedBatch(); as batch) {
+    <dialog open aria-labelledby="justification-title" class="justification-dialog">
+      <h2 id="justification-title">Justificativa do lote {{ batch.id }}</h2>
+      <p>{{ batch.justification ?? 'Nenhuma justificativa registrada para este lote.' }}</p>
+      <button type="button" class="button button-primary" (click)="justificationOpen.set(false)">Fechar</button>
+    </dialog>
   }
 </section>

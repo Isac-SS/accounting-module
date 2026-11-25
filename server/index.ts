@@ -32,6 +32,35 @@ Bun.serve({
   port,
   fetch(request) {
     const url = new URL(request.url);
+    if (url.pathname === '/api/batches/status' && request.method === 'PATCH') {
+      return request.json().then((body: { ids?: unknown; status?: unknown }) => {
+        const ids = body.ids;
+        const targetStatus = body.status;
+        if (!Array.isArray(ids) || ids.length === 0 || !ids.every((id) => Number.isInteger(id)) ||
+            (targetStatus !== 'SUBMITTED' && targetStatus !== 'CONFIRMED')) {
+          return Response.json({ message: 'Informe IDs e uma situação válida.' }, { status: 400 });
+        }
+
+        const selected = ids.map((id) => batches.find((batch) => batch.id === id));
+        if (selected.some((batch) => !batch)) {
+          return Response.json({ message: 'Um ou mais lotes não foram encontrados.' }, { status: 404 });
+        }
+
+        const expectedStatus = targetStatus === 'SUBMITTED' ? 'OPEN' : 'SUBMITTED';
+        if (selected.some((batch) => batch?.status !== expectedStatus)) {
+          return Response.json({ message: 'A transição de situação solicitada não é permitida.' }, { status: 409 });
+        }
+
+        const changedAt = new Date().toISOString();
+        for (const batch of selected) {
+          batch!.status = targetStatus;
+          batch!.statusChangedAt = changedAt;
+          if (targetStatus === 'CONFIRMED') batch!.approvedBy = 'supervisor01';
+        }
+        return Response.json({ updated: selected.length });
+      });
+    }
+
     if (url.pathname !== '/api/batches' || request.method !== 'GET') {
       return Response.json({ message: 'Endpoint não encontrado.' }, { status: 404 });
     }

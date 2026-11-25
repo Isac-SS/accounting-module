@@ -1,7 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Batch, BatchFilters, Page } from '../domain/batch';
+import { Batch, BatchFilters, BatchStatus, Page } from '../domain/batch';
 
 @Injectable({ providedIn: 'root' })
 export class BatchApi {
@@ -26,5 +26,9 @@ export class BatchApi {
     }
 
     return this.http.get<Page<Batch>>('/api/batches', { params });
+  }
+
+  updateStatus(ids: number[], status: Exclude<BatchStatus, 'OPEN'>): Observable<{ updated: number }> {
+    return this.http.patch<{ updated: number }>('/api/batches/status', { ids, status });
   }
 }
