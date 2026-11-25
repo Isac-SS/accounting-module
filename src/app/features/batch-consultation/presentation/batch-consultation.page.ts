@@ -62,11 +62,13 @@ export class BatchConsultationPage {
   protected readonly actionError = signal<string | null>(null);
   protected readonly actionLoading = signal(false);
   protected readonly justificationOpen = signal(false);
+  protected readonly deleteConfirmationOpen = signal(false);
   protected readonly editorOpen = signal(false);
   protected readonly editorMode = signal<'create' | 'edit' | 'view'>('create');
   protected readonly editorEntries = signal<BatchEntry[]>([]);
   protected readonly editorError = signal<string | null>(null);
   protected readonly editorSaving = signal(false);
+  private moveBackAfterEmptyPage = false;
   protected readonly selectedBatch = computed(() => {
     const selected = this.selectedIds();
     return selected.size === 1 ? this.batches().find((batch) => selected.has(batch.id)) ?? null : null;
@@ -122,7 +124,14 @@ export class BatchConsultationPage {
     ).subscribe((result: Page<Batch> | null) => {
       this.loading.set(false);
       this.hasSearched.set(true);
+      if (!result) this.moveBackAfterEmptyPage = false;
       if (result) {
+        if (this.moveBackAfterEmptyPage && result.items.length === 0 && result.page > 1) {
+          this.moveBackAfterEmptyPage = false;
+          this.requestPage(result.page - 1, this.activeFilters());
+          return;
+        }
+        this.moveBackAfterEmptyPage = false;
         this.batches.set(result.items);
         this.total.set(result.total);
         this.page.set(result.page);
@@ -281,6 +290,33 @@ export class BatchConsultationPage {
     if (this.editorSaving()) return;
     this.editorOpen.set(false);
     this.editorError.set(null);
+  }
+
+  protected openDeleteConfirmation(): void {
+    if (this.selectedBatch()?.status === 'OPEN') this.deleteConfirmationOpen.set(true);
+  }
+
+  protected deleteSelected(): void {
+    const batch = this.selectedBatch();
+    if (!batch || batch.status !== 'OPEN' || this.actionLoading()) return;
+    this.actionLoading.set(true);
+    this.actionError.set(null);
+    this.api.delete(batch.id).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+      next: () => {
+        this.deleteConfirmationOpen.set(false);
+        this.selectedIds.set(new Set());
+        this.actionMessage.set(`Lote ${batch.id} excluído com sucesso.`);
+        this.moveBackAfterEmptyPage = true;
+        this.requestPage(this.page(), this.activeFilters());
+        this.actionLoading.set(false);
+      },
+      error: (error: unknown) => {
+        this.actionError.set(error instanceof HttpErrorResponse && error.status === 409
+          ? 'Este lote deixou de estar aberto e não pode ser excluído. Atualize a consulta.'
+          : 'Não foi possível excluir o lote. Tente novamente.');
+        this.actionLoading.set(false);
+      }
+    });
   }
 
   protected formatAmount(amountCents: number): string {

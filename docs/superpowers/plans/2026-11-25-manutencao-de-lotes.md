@@ -135,12 +135,12 @@
 
 **Interface consumida:** `BatchApi.delete(id): Observable<void>`.
 
-- [ ] Adicionar ação Excluir, habilitada para uma seleção única de lote aberto.
-- [ ] Exibir confirmação com o ID do lote; permitir cancelar sem chamar API.
-- [ ] No aceite, chamar `DELETE /api/batches/:id`; manter a confirmação aberta e mostrar erro se a API falhar.
-- [ ] No sucesso, fechar confirmação e atualizar os resultados; se a página atual ficar vazia, navegar para a página anterior.
+- [x] Adicionar ação Excluir, habilitada para uma seleção única de lote aberto.
+- [x] Exibir confirmação com o ID do lote; permitir cancelar sem chamar API.
+- [x] No aceite, chamar `DELETE /api/batches/:id`; manter a confirmação aberta e mostrar erro se a API falhar.
+- [x] No sucesso, fechar confirmação e atualizar os resultados; se a página atual ficar vazia, navegar para a página anterior.
 - [ ] Conferir manualmente cancelamento, exclusão de lote aberto, conflito para lote fechado e remoção do último item da última página.
-- [ ] Commit: `feat: adiciona exclusão de lotes`.
+- [x] Commit: `feat: adiciona exclusão de lotes`.
 
 ### Etapa 6: revisão e entrega
 
