@@ -1,15 +1,21 @@
 import { Component, inject, signal } from '@angular/core';
 import { Batch, BatchEntry, BatchFilters, BatchStatus } from '../domain/batch';
 import { BatchConsultationStore } from '../application/batch-consultation.store';
-import { BatchActionsComponent } from './batch-actions.component';
-import { BatchEntryEditorComponent } from './batch-entry-editor.component';
-import { BatchFilterFormComponent } from './batch-filter-form.component';
-import { BatchPaginationComponent } from './batch-pagination.component';
-import { BatchTableComponent } from './batch-table.component';
+import { BatchActionsComponent } from './components/batch-actions/batch-actions.component';
+import { BatchEntryEditorComponent } from './components/batch-entry-editor/batch-entry-editor.component';
+import { BatchFilterFormComponent } from './components/batch-filter-form/batch-filter-form.component';
+import { BatchPaginationComponent } from './components/batch-pagination/batch-pagination.component';
+import { BatchTableComponent } from './components/batch-table/batch-table.component';
 
 @Component({
   selector: 'app-batch-consultation-page',
-  imports: [BatchActionsComponent, BatchEntryEditorComponent, BatchFilterFormComponent, BatchPaginationComponent, BatchTableComponent],
+  imports: [
+    BatchActionsComponent,
+    BatchEntryEditorComponent,
+    BatchFilterFormComponent,
+    BatchPaginationComponent,
+    BatchTableComponent,
+  ],
   templateUrl: './batch-consultation.page.html',
   styleUrl: './batch-consultation.page.scss',
 })
@@ -114,5 +120,4 @@ export class BatchConsultationPage {
   protected deleteSelected(): void {
     this.store.deleteSelected(() => this.deleteConfirmationOpen.set(false));
   }
-
 }
