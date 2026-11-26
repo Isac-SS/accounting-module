@@ -45,6 +45,7 @@
 - Criar: `src/app/features/batch-consultation/presentation/batch-filter-form.component.html`
 - Criar: `src/app/features/batch-consultation/presentation/batch-filter-form.component.scss`
 - Criar: `src/app/features/batch-consultation/presentation/batch-filter-form.component.spec.ts`
+- Criar: `src/app/features/batch-consultation/presentation/batch-consultation.shared.scss`
 - Modificar: `src/app/features/batch-consultation/presentation/batch-consultation.page.ts`
 - Modificar: `src/app/features/batch-consultation/presentation/batch-consultation.page.html`
 - Modificar: `src/app/features/batch-consultation/presentation/batch-consultation.page.scss`
@@ -57,6 +58,7 @@
 - [ ] Mover `FormGroup`, `orderedRange`, `submit`, `clear`, conversão para centavos, estado expandido/recolhido e marcação de erros para o componente de filtros.
 - [ ] Alterar a página para receber `(search)` e encaminhar o `BatchFilters` ao `store.search`.
 - [ ] Mover os estilos específicos do formulário para a folha SCSS do novo componente.
+- [ ] Mover as regras compartilhadas `.button`, `.button-primary` e estados do botão para `batch-consultation.shared.scss`; importar essa folha na página e no formulário para manter estilos dos diálogos e do novo componente.
 - [ ] Executar `npm test -- --watch=false`; confirmar que testes do componente e da página passam, inclusive paginação usando o último filtro submetido.
 - [ ] Commit: `feat: extrai formulário de filtros`
 
