@@ -58,7 +58,7 @@
 - [ ] Mover `FormGroup`, `orderedRange`, `submit`, `clear`, conversão para centavos, estado expandido/recolhido e marcação de erros para o componente de filtros.
 - [ ] Alterar a página para receber `(search)` e encaminhar o `BatchFilters` ao `store.search`.
 - [ ] Mover os estilos específicos do formulário para a folha SCSS do novo componente.
-- [ ] Mover as regras compartilhadas `.button`, `.button-primary` e estados do botão para `batch-consultation.shared.scss`; importar essa folha na página e no formulário para manter estilos dos diálogos e do novo componente.
+- [ ] Mover as regras compartilhadas `.button`, `.button-primary`, estados do botão e layout `.batch-actions` para `batch-consultation.shared.scss`; importar essa folha nos componentes e na página que ainda contém diálogos.
 - [ ] Executar `npm test -- --watch=false`; confirmar que testes do componente e da página passam, inclusive paginação usando o último filtro submetido.
 - [ ] Commit: `feat: extrai formulário de filtros`
 

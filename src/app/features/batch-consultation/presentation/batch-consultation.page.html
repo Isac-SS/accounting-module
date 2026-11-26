@@ -12,15 +12,20 @@
     <p class="alert alert-error" role="alert">{{ error }}</p>
   }
 
-  <div class="batch-actions" aria-label="Ações dos lotes">
-    <button type="button" class="button button-primary" [disabled]="actionLoading() || loading()" (click)="openCreate()">Incluir</button>
-    <button type="button" class="button" [disabled]="!selectedBatch() || selectedBatch()?.status !== 'OPEN' || actionLoading()" (click)="openSelected('edit')">Alterar</button>
-    <button type="button" class="button" [disabled]="!selectedBatch() || actionLoading()" (click)="openSelected('view')">Visualizar</button>
-    <button type="button" class="button" [disabled]="!selectedBatch() || selectedBatch()?.status !== 'OPEN' || actionLoading()" (click)="openDeleteConfirmation()">Excluir</button>
-    <button type="button" class="button" [disabled]="!canConfirm() || actionLoading()" (click)="changeStatus('CONFIRMED')">Confirmar</button>
-    <button type="button" class="button button-primary" [disabled]="!canSubmit() || actionLoading()" (click)="changeStatus('SUBMITTED')">Enviar</button>
-    <button type="button" class="button" [disabled]="!selectedBatch() || actionLoading()" (click)="openJustification()">Visualizar justificativa</button>
-  </div>
+  <app-batch-actions
+    [selectedBatch]="selectedBatch()"
+    [canConfirm]="canConfirm()"
+    [canSubmit]="canSubmit()"
+    [loading]="loading()"
+    [actionLoading]="actionLoading()"
+    (create)="openCreate()"
+    (edit)="openSelected('edit')"
+    (view)="openSelected('view')"
+    (delete)="openDeleteConfirmation()"
+    (confirm)="changeStatus('CONFIRMED')"
+    (submit)="changeStatus('SUBMITTED')"
+    (showJustification)="openJustification()"
+  />
 
   <div class="results-heading" aria-live="polite">
     <span>{{ total() }} {{ total() === 1 ? 'lote encontrado' : 'lotes encontrados' }}</span>

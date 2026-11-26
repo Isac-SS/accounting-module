@@ -1,6 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
 import { Batch, BatchEntry, BatchFilters, BatchStatus } from '../domain/batch';
 import { BatchConsultationStore, BATCH_PAGE_SIZE } from '../application/batch-consultation.store';
+import { BatchActionsComponent } from './batch-actions.component';
 import { BatchEntryEditorComponent } from './batch-entry-editor.component';
 import { BatchFilterFormComponent } from './batch-filter-form.component';
 
@@ -12,7 +13,7 @@ const statusLabels: Record<BatchStatus, string> = {
 
 @Component({
   selector: 'app-batch-consultation-page',
-  imports: [BatchEntryEditorComponent, BatchFilterFormComponent],
+  imports: [BatchActionsComponent, BatchEntryEditorComponent, BatchFilterFormComponent],
   templateUrl: './batch-consultation.page.html',
   styleUrl: './batch-consultation.page.scss',
 })

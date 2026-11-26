@@ -15,3 +15,4 @@
 .button:hover:not(:disabled) { border-color: #17645e; }
 .button:disabled { opacity: .55; cursor: not-allowed; }
 .button-primary { border-color: #17645e; color: #fff; background: #17645e; }
+.batch-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px; }
