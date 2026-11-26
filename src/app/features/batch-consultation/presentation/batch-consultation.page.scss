@@ -5,12 +5,6 @@
 .alert { margin: 0; padding: 11px 14px; border-radius: 6px; font-size: 13px; }
 .alert-error { color: #8e2929; background: #fceeee; }
 .alert-success { color: #246347; background: #e3f4eb; }
-.pagination { display: flex; justify-content: center; align-items: center; gap: 8px; }
-.pagination button, .pagination [aria-current] { display: grid; width: 30px; height: 30px; place-items: center; border: 1px solid #d6dfdc; border-radius: 50%; color: #263330; background: #fff; font: inherit; font-weight: 600; }
-.pagination button { cursor: pointer; }
-.pagination button:disabled { opacity: .4; cursor: not-allowed; }
-.pagination [aria-current] { border-color: #17645e; color: #fff; background: #17645e; }
-.page-count { color: #788582; font-size: 12px; }
 .justification-dialog { width: min(420px, calc(100vw - 32px)); padding: 22px; border: 1px solid #d6dfdc; border-radius: 8px; color: #263330; box-shadow: 0 12px 38px rgb(20 50 45 / 20%); }
 .justification-dialog::backdrop { background: rgb(20 35 32 / 35%); }
 .justification-dialog h2 { margin: 0 0 12px; font-size: 17px; }

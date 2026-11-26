@@ -1,0 +1,7 @@
+:host { display: block; }
+.pagination { display: flex; justify-content: center; align-items: center; gap: 8px; }
+.pagination button, .pagination [aria-current] { display: grid; width: 30px; height: 30px; place-items: center; border: 1px solid #d6dfdc; border-radius: 50%; color: #263330; background: #fff; font: inherit; font-weight: 600; }
+.pagination button { cursor: pointer; }
+.pagination button:disabled { opacity: .4; cursor: not-allowed; }
+.pagination [aria-current] { border-color: #17645e; color: #fff; background: #17645e; }
+.page-count { color: #788582; font-size: 12px; }

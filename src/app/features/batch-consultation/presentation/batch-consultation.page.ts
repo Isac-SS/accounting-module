@@ -1,14 +1,15 @@
 import { Component, inject, signal } from '@angular/core';
 import { Batch, BatchEntry, BatchFilters, BatchStatus } from '../domain/batch';
-import { BatchConsultationStore, BATCH_PAGE_SIZE } from '../application/batch-consultation.store';
+import { BatchConsultationStore } from '../application/batch-consultation.store';
 import { BatchActionsComponent } from './batch-actions.component';
 import { BatchEntryEditorComponent } from './batch-entry-editor.component';
 import { BatchFilterFormComponent } from './batch-filter-form.component';
+import { BatchPaginationComponent } from './batch-pagination.component';
 import { BatchTableComponent } from './batch-table.component';
 
 @Component({
   selector: 'app-batch-consultation-page',
-  imports: [BatchActionsComponent, BatchEntryEditorComponent, BatchFilterFormComponent, BatchTableComponent],
+  imports: [BatchActionsComponent, BatchEntryEditorComponent, BatchFilterFormComponent, BatchPaginationComponent, BatchTableComponent],
   templateUrl: './batch-consultation.page.html',
   styleUrl: './batch-consultation.page.scss',
 })
@@ -16,7 +17,7 @@ export class BatchConsultationPage {
   protected readonly store = inject(BatchConsultationStore);
 
   protected readonly page = this.store.page;
-  protected readonly pageSize = BATCH_PAGE_SIZE;
+  protected readonly totalPages = this.store.totalPages;
   protected readonly batches = this.store.batches;
   protected readonly total = this.store.total;
   protected readonly loading = this.store.loading;
@@ -27,7 +28,6 @@ export class BatchConsultationPage {
   protected readonly canSubmit = this.store.canSubmit;
   protected readonly canConfirm = this.store.canConfirm;
   protected readonly allVisibleSelected = this.store.allVisibleSelected;
-  protected readonly totalPages = this.store.totalPages;
   protected readonly actionMessage = this.store.actionMessage;
   protected readonly actionError = this.store.actionError;
   protected readonly actionLoading = this.store.actionLoading;

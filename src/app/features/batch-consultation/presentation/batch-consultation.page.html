@@ -39,16 +39,12 @@
     (visibleSelectionChange)="toggleVisible($event)"
   />
 
-  @if (totalPages() > 1) {
-    <nav class="pagination" aria-label="Paginação dos lotes">
-      <button type="button" aria-label="Primeira página" [disabled]="page() === 1 || loading()" (click)="goToPage(1)">«</button>
-      <button type="button" aria-label="Página anterior" [disabled]="page() === 1 || loading()" (click)="goToPage(page() - 1)">‹</button>
-      <span aria-current="page" [attr.aria-label]="'Página ' + page() + ' de ' + totalPages()">{{ page() }}</span>
-      <button type="button" aria-label="Próxima página" [disabled]="page() === totalPages() || loading()" (click)="goToPage(page() + 1)">›</button>
-      <button type="button" aria-label="Última página" [disabled]="page() === totalPages() || loading()" (click)="goToPage(totalPages())">»</button>
-      <span class="page-count">de {{ totalPages() }}</span>
-    </nav>
-  }
+  <app-batch-pagination
+    [page]="page()"
+    [totalPages]="totalPages()"
+    [loading]="loading()"
+    (pageChange)="goToPage($event)"
+  />
 
   @if (justificationOpen() && selectedBatch(); as batch) {
     <dialog open aria-labelledby="justification-title" class="justification-dialog">
