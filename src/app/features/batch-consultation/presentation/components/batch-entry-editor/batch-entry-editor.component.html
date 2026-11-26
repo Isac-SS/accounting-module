@@ -25,7 +25,15 @@
       </div>
       <div class="field">
         <label for="entry-amount">Valor (R$)</label>
-        <input id="entry-amount" type="number" min="0.01" step="0.01" formControlName="amount" />
+        <input
+          id="entry-amount"
+          type="text"
+          inputmode="numeric"
+          [attr.maxlength]="amountMaxLength"
+          [value]="form.controls.amount.value | brlCurrency"
+          (input)="onAmountInput($event)"
+          (blur)="form.controls.amount.markAsTouched()"
+        />
         @if (form.controls.amount.touched && form.controls.amount.hasError('centPrecision')) { <span class="hint error">Informe no máximo duas casas decimais.</span> }
       </div>
       <div class="field">

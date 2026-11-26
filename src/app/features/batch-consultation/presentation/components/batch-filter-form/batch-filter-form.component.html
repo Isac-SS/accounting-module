@@ -58,11 +58,27 @@
           <legend>Valor do lote (R$)</legend>
           <div class="field">
             <label for="amount-from">De</label>
-            <input id="amount-from" type="number" min="0" step="0.01" formControlName="amountFrom" />
+            <input
+              id="amount-from"
+              type="text"
+              inputmode="numeric"
+              [attr.maxlength]="amountMaxLength"
+              [value]="form.controls.amountFrom.value | brlCurrency"
+              (input)="onAmountInput('amountFrom', $event)"
+              (blur)="form.controls.amountFrom.markAsTouched()"
+            />
           </div>
           <div class="field">
             <label for="amount-to">Até</label>
-            <input id="amount-to" type="number" min="0" step="0.01" formControlName="amountTo" />
+            <input
+              id="amount-to"
+              type="text"
+              inputmode="numeric"
+              [attr.maxlength]="amountMaxLength"
+              [value]="form.controls.amountTo.value | brlCurrency"
+              (input)="onAmountInput('amountTo', $event)"
+              (blur)="form.controls.amountTo.markAsTouched()"
+            />
           </div>
           @if (form.hasError('rangeOrder_amountFrom') && (form.controls.amountFrom.touched || form.controls.amountTo.touched)) {
             <span class="range-error">O valor inicial deve ser menor ou igual ao final.</span>

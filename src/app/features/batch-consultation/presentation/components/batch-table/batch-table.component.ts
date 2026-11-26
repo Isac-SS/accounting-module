@@ -1,5 +1,5 @@
 import { Component, input, output } from '@angular/core';
-import { Batch, BatchStatus } from '../domain/batch';
+import { Batch, BatchStatus } from '../../../domain/batch';
 
 const statusLabels: Record<BatchStatus, string> = {
   OPEN: 'Aberto',
@@ -35,7 +35,9 @@ export class BatchTableComponent {
   }
 
   protected formatAmount(amountCents: number): string {
-    return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(amountCents / 100);
+    return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(
+      amountCents / 100,
+    );
   }
 
   protected formatDate(date: string): string {
@@ -44,6 +46,8 @@ export class BatchTableComponent {
   }
 
   protected formatDateTime(dateTime: string): string {
-    return new Intl.DateTimeFormat('pt-BR', { dateStyle: 'short', timeStyle: 'short' }).format(new Date(dateTime));
+    return new Intl.DateTimeFormat('pt-BR', { dateStyle: 'short', timeStyle: 'short' }).format(
+      new Date(dateTime),
+    );
   }
 }

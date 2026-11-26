@@ -1,5 +1,5 @@
 import { Component, input, output } from '@angular/core';
-import { Batch } from '../domain/batch';
+import { Batch } from '../../../domain/batch';
 
 @Component({
   selector: 'app-batch-actions',

@@ -1,4 +1,4 @@
-import { ApiError } from '../../../core/http/httpClient.class';
+import { ApiError } from '../../../../../core/http/httpClient.class';
 import { classificarErroConsultaConta } from './batch-entry-editor.component';
 
 describe('classificarErroConsultaConta', () => {
