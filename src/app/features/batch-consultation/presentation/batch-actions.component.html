@@ -1,0 +1,9 @@
+<div class="batch-actions" aria-label="Ações dos lotes">
+  <button type="button" class="button button-primary" [disabled]="actionLoading() || loading()" (click)="create.emit()">Incluir</button>
+  <button type="button" class="button" [disabled]="!selectedBatch() || selectedBatch()?.status !== 'OPEN' || actionLoading()" (click)="edit.emit()">Alterar</button>
+  <button type="button" class="button" [disabled]="!selectedBatch() || actionLoading()" (click)="view.emit()">Visualizar</button>
+  <button type="button" class="button" [disabled]="!selectedBatch() || selectedBatch()?.status !== 'OPEN' || actionLoading()" (click)="delete.emit()">Excluir</button>
+  <button type="button" class="button" [disabled]="!canConfirm() || actionLoading()" (click)="confirm.emit()">Confirmar</button>
+  <button type="button" class="button button-primary" [disabled]="!canSubmit() || actionLoading()" (click)="submit.emit()">Enviar</button>
+  <button type="button" class="button" [disabled]="!selectedBatch() || actionLoading()" (click)="showJustification.emit()">Visualizar justificativa</button>
+</div>

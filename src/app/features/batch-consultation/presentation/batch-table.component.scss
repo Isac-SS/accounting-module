@@ -1,0 +1,16 @@
+:host { display: block; }
+.results-heading { display: flex; justify-content: flex-end; color: #687572; font-size: 12px; }
+.table-container { position: relative; overflow-x: auto; border: 1px solid #e2e8e6; border-radius: 7px; }
+table { width: 100%; border-collapse: collapse; font-size: 12px; }
+th { padding: 10px 9px; color: #fff; background: #174846; font-weight: 600; text-align: left; white-space: nowrap; }
+td { padding: 9px; border-bottom: 1px solid #e8edeb; color: #35413e; white-space: nowrap; }
+tbody tr:hover { background: #f6faf9; }
+.align-right { text-align: right; }
+.align-center { text-align: center; }
+.status { display: inline-block; padding: 4px 8px; border-radius: 999px; font-size: 11px; font-weight: 650; }
+.status-open { color: #76560c; background: #fff4d6; }
+.status-submitted { color: #174f84; background: #e5f1fc; }
+.status-confirmed { color: #246347; background: #e3f4eb; }
+.empty-row { height: 88px; color: #788582; text-align: center; }
+.loading-overlay { position: absolute; z-index: 1; inset: 0; display: grid; place-items: center; color: #17645e; background: rgb(255 255 255 / 76%); font-weight: 650; }
+.visually-hidden { position: absolute; overflow: hidden; width: 1px; height: 1px; clip: rect(0, 0, 0, 0); white-space: nowrap; }

@@ -2,15 +2,21 @@
 
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.2.31.
 
-## Development server
+## Servidores de desenvolvimento
 
-To start a local development server, run:
+Inicie a API local de exemplo em um terminal:
 
 ```bash
-ng serve
+npm run mock
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+Em outro terminal, inicie a aplicação Angular:
+
+```bash
+npm start
+```
+
+Abra `http://localhost:4200/`. O servidor Angular encaminha as chamadas `/api` para a API local na porta 3333.
 
 ## Code scaffolding
 

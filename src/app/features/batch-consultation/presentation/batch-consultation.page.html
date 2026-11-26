@@ -1,0 +1,80 @@
+<section class="consultation-card">
+  <app-batch-filter-form [loading]="loading()" (search)="search($event)" />
+
+  @if (errorMessage(); as error) {
+    <p class="alert alert-error" role="alert">{{ error }}</p>
+  }
+
+  @if (actionMessage(); as message) {
+    <p class="alert alert-success" role="status">{{ message }}</p>
+  }
+  @if (actionError(); as error) {
+    <p class="alert alert-error" role="alert">{{ error }}</p>
+  }
+
+  <app-batch-actions
+    [selectedBatch]="selectedBatch()"
+    [canConfirm]="canConfirm()"
+    [canSubmit]="canSubmit()"
+    [loading]="loading()"
+    [actionLoading]="actionLoading()"
+    (create)="openCreate()"
+    (edit)="openSelected('edit')"
+    (view)="openSelected('view')"
+    (delete)="openDeleteConfirmation()"
+    (confirm)="changeStatus('CONFIRMED')"
+    (submit)="changeStatus('SUBMITTED')"
+    (showJustification)="openJustification()"
+  />
+
+  <app-batch-table
+    [batches]="batches()"
+    [total]="total()"
+    [loading]="loading()"
+    [hasSearched]="hasSearched()"
+    [selectedIds]="selectedIds()"
+    [allVisibleSelected]="allVisibleSelected()"
+    [actionLoading]="actionLoading()"
+    (batchSelectionChange)="toggleBatch($event.id, $event.checked)"
+    (visibleSelectionChange)="toggleVisible($event)"
+  />
+
+  <app-batch-pagination
+    [page]="page()"
+    [totalPages]="totalPages()"
+    [loading]="loading()"
+    (pageChange)="goToPage($event)"
+  />
+
+  @if (justificationOpen() && selectedBatch(); as batch) {
+    <dialog open aria-labelledby="justification-title" class="justification-dialog">
+      <h2 id="justification-title">Justificativa do lote {{ batch.id }}</h2>
+      <p>{{ batch.justification ?? 'Nenhuma justificativa registrada para este lote.' }}</p>
+      <button type="button" class="button button-primary" (click)="justificationOpen.set(false)">Fechar</button>
+    </dialog>
+  }
+
+  @if (editorOpen()) {
+    <app-batch-entry-editor
+      [entries]="editorEntries()"
+      [mode]="editorMode()"
+      [saving]="editorSaving()"
+      [apiError]="editorError()"
+      (save)="saveEntries($event)"
+      (cancel)="closeEditor()"
+    />
+  }
+
+  @if (deleteConfirmationOpen() && selectedBatch(); as batch) {
+    <dialog open aria-modal="true" aria-labelledby="delete-title" class="justification-dialog" (keydown.escape)="deleteConfirmationOpen.set(false)">
+      <h2 id="delete-title">Excluir lote {{ batch.id }}?</h2>
+      <p>Esta ação remove o lote e seus lançamentos do mock.</p>
+      @if (actionError(); as error) { <p class="alert alert-error" role="alert">{{ error }}</p> }
+      <div class="batch-actions">
+        <button type="button" class="button" [disabled]="actionLoading()" (click)="deleteConfirmationOpen.set(false)">Cancelar</button>
+        <button type="button" class="button button-primary" [disabled]="actionLoading()" (click)="deleteSelected()">{{ actionLoading() ? 'Excluindo…' : 'Confirmar exclusão' }}</button>
+      </div>
+    </dialog>
+  }
+
+</section>
