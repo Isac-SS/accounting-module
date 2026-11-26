@@ -5,27 +5,12 @@
 .alert { margin: 0; padding: 11px 14px; border-radius: 6px; font-size: 13px; }
 .alert-error { color: #8e2929; background: #fceeee; }
 .alert-success { color: #246347; background: #e3f4eb; }
-.results-heading { display: flex; justify-content: flex-end; color: #687572; font-size: 12px; }
-.table-container { position: relative; overflow-x: auto; border: 1px solid #e2e8e6; border-radius: 7px; }
-table { width: 100%; border-collapse: collapse; font-size: 12px; }
-th { padding: 10px 9px; color: #fff; background: #174846; font-weight: 600; text-align: left; white-space: nowrap; }
-td { padding: 9px; border-bottom: 1px solid #e8edeb; color: #35413e; white-space: nowrap; }
-tbody tr:hover { background: #f6faf9; }
-.align-right { text-align: right; }
-.align-center { text-align: center; }
-.status { display: inline-block; padding: 4px 8px; border-radius: 999px; font-size: 11px; font-weight: 650; }
-.status-open { color: #76560c; background: #fff4d6; }
-.status-submitted { color: #174f84; background: #e5f1fc; }
-.status-confirmed { color: #246347; background: #e3f4eb; }
-.empty-row { height: 88px; color: #788582; text-align: center; }
-.loading-overlay { position: absolute; z-index: 1; inset: 0; display: grid; place-items: center; color: #17645e; background: rgb(255 255 255 / 76%); font-weight: 650; }
 .pagination { display: flex; justify-content: center; align-items: center; gap: 8px; }
 .pagination button, .pagination [aria-current] { display: grid; width: 30px; height: 30px; place-items: center; border: 1px solid #d6dfdc; border-radius: 50%; color: #263330; background: #fff; font: inherit; font-weight: 600; }
 .pagination button { cursor: pointer; }
 .pagination button:disabled { opacity: .4; cursor: not-allowed; }
 .pagination [aria-current] { border-color: #17645e; color: #fff; background: #17645e; }
 .page-count { color: #788582; font-size: 12px; }
-.visually-hidden { position: absolute; overflow: hidden; width: 1px; height: 1px; clip: rect(0, 0, 0, 0); white-space: nowrap; }
 .justification-dialog { width: min(420px, calc(100vw - 32px)); padding: 22px; border: 1px solid #d6dfdc; border-radius: 8px; color: #263330; box-shadow: 0 12px 38px rgb(20 50 45 / 20%); }
 .justification-dialog::backdrop { background: rgb(20 35 32 / 35%); }
 .justification-dialog h2 { margin: 0 0 12px; font-size: 17px; }

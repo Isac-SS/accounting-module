@@ -27,58 +27,17 @@
     (showJustification)="openJustification()"
   />
 
-  <div class="results-heading" aria-live="polite">
-    <span>{{ total() }} {{ total() === 1 ? 'lote encontrado' : 'lotes encontrados' }}</span>
-  </div>
-
-  <div class="table-container" [attr.aria-busy]="loading()">
-    @if (loading()) {
-      <div class="loading-overlay" role="status">Carregando lotes…</div>
-    }
-    <table>
-      <caption class="visually-hidden">Lotes de créditos e débitos</caption>
-      <thead>
-        <tr>
-          <th scope="col" class="align-center"><input type="checkbox" aria-label="Selecionar todos os lotes desta página" [checked]="allVisibleSelected()" [disabled]="loading() || actionLoading() || batches().length === 0" (change)="toggleVisible($any($event.target).checked)" /></th>
-          <th scope="col">ID lote</th>
-          <th scope="col">Data de entrada</th>
-          <th scope="col" class="align-right">Valor</th>
-          <th scope="col" class="align-center">Lançamentos</th>
-          <th scope="col">Usuário de registro</th>
-          <th scope="col">Usuário de aprovação</th>
-          <th scope="col">Situação</th>
-          <th scope="col">Data/hora da situação</th>
-        </tr>
-      </thead>
-      <tbody>
-        @for (batch of batches(); track batch.id) {
-          <tr>
-            <td class="align-center"><input type="checkbox" [attr.aria-label]="'Selecionar lote ' + batch.id" [checked]="selectedIds().has(batch.id)" [disabled]="loading() || actionLoading()" (change)="toggleBatch(batch.id, $any($event.target).checked)" /></td>
-            <td>{{ batch.id }}</td>
-            <td>{{ formatDate(batch.entryDate) }}</td>
-            <td class="align-right">{{ formatAmount(batch.amountCents) }}</td>
-            <td class="align-center">{{ batch.entryCount }}</td>
-            <td>{{ batch.createdBy }}</td>
-            <td>{{ batch.approvedBy ?? '—' }}</td>
-            <td><span class="status" [class.status-open]="batch.status === 'OPEN'" [class.status-submitted]="batch.status === 'SUBMITTED'" [class.status-confirmed]="batch.status === 'CONFIRMED'">{{ visibleStatuses[batch.status] }}</span></td>
-            <td>{{ formatDateTime(batch.statusChangedAt) }}</td>
-          </tr>
-        } @empty {
-          <tr>
-            <td colspan="9" class="empty-row">
-              @if (loading()) {
-                Aguarde enquanto os lotes são carregados.
-              } @else if (hasSearched()) {
-                Nenhum lote encontrado para os filtros informados.
-              } @else {
-                Informe os filtros e selecione Pesquisar.
-              }
-            </td>
-          </tr>
-        }
-      </tbody>
-    </table>
-  </div>
+  <app-batch-table
+    [batches]="batches()"
+    [total]="total()"
+    [loading]="loading()"
+    [hasSearched]="hasSearched()"
+    [selectedIds]="selectedIds()"
+    [allVisibleSelected]="allVisibleSelected()"
+    [actionLoading]="actionLoading()"
+    (batchSelectionChange)="toggleBatch($event.id, $event.checked)"
+    (visibleSelectionChange)="toggleVisible($event)"
+  />
 
   @if (totalPages() > 1) {
     <nav class="pagination" aria-label="Paginação dos lotes">

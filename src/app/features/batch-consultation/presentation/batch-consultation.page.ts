@@ -4,16 +4,11 @@ import { BatchConsultationStore, BATCH_PAGE_SIZE } from '../application/batch-co
 import { BatchActionsComponent } from './batch-actions.component';
 import { BatchEntryEditorComponent } from './batch-entry-editor.component';
 import { BatchFilterFormComponent } from './batch-filter-form.component';
-
-const statusLabels: Record<BatchStatus, string> = {
-  OPEN: 'Aberto',
-  SUBMITTED: 'Enviado',
-  CONFIRMED: 'Confirmado',
-};
+import { BatchTableComponent } from './batch-table.component';
 
 @Component({
   selector: 'app-batch-consultation-page',
-  imports: [BatchActionsComponent, BatchEntryEditorComponent, BatchFilterFormComponent],
+  imports: [BatchActionsComponent, BatchEntryEditorComponent, BatchFilterFormComponent, BatchTableComponent],
   templateUrl: './batch-consultation.page.html',
   styleUrl: './batch-consultation.page.scss',
 })
@@ -38,7 +33,6 @@ export class BatchConsultationPage {
   protected readonly actionLoading = this.store.actionLoading;
   protected readonly editorSaving = this.store.editorSaving;
   protected readonly editorError = this.store.editorError;
-  protected readonly visibleStatuses = statusLabels;
 
   protected readonly justificationOpen = signal(false);
   protected readonly deleteConfirmationOpen = signal(false);
@@ -121,16 +115,4 @@ export class BatchConsultationPage {
     this.store.deleteSelected(() => this.deleteConfirmationOpen.set(false));
   }
 
-  protected formatAmount(amountCents: number): string {
-    return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(amountCents / 100);
-  }
-
-  protected formatDate(date: string): string {
-    const [year, month, day] = date.split('-');
-    return `${day}/${month}/${year}`;
-  }
-
-  protected formatDateTime(dateTime: string): string {
-    return new Intl.DateTimeFormat('pt-BR', { dateStyle: 'short', timeStyle: 'short' }).format(new Date(dateTime));
-  }
 }
