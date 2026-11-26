@@ -1,13 +1,19 @@
 import { HttpErrorResponse } from '@angular/common/http';
+import { ApiError } from '../../../core/http/httpClient.class';
 import { AfterViewInit, Component, DestroyRef, ElementRef, Input, OnChanges, OnInit, SimpleChanges, ViewChild, inject, output, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AbstractControl, FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { catchError, distinctUntilChanged, map, of, switchMap, tap, timer } from 'rxjs';
-import { BatchApi } from '../data/batch-api';
+import { BatchApi } from '../infrastructure/batch-api';
 import { BatchEntry, BatchEntryOptions } from '../domain/batch';
 
 type EditorMode = 'create' | 'edit' | 'view';
 type AccountLookup = 'idle' | 'checking' | 'found' | 'not-found' | 'unavailable';
+
+export function classificarErroConsultaConta(error: unknown): 'not-found' | 'unavailable' {
+  const status = error instanceof ApiError || error instanceof HttpErrorResponse ? error.status : undefined;
+  return status === 404 ? 'not-found' : 'unavailable';
+}
 
 function centPrecision(control: AbstractControl): { centPrecision: true } | null {
   const value = control.value;
@@ -78,7 +84,7 @@ export class BatchEntryEditorComponent implements OnInit, OnChanges, AfterViewIn
         this.accountLookup.set('checking');
         return timer(400).pipe(switchMap(() => this.api.getCurrentAccount(number).pipe(
           map((account) => ({ kind: 'found' as const, holder: account.holder })),
-          catchError((error: unknown) => of({ kind: error instanceof HttpErrorResponse && error.status === 404 ? 'not-found' as const : 'unavailable' as const, holder: '' }))
+          catchError((error: unknown) => of({ kind: classificarErroConsultaConta(error), holder: '' }))
         )));
       }),
       takeUntilDestroyed(this.destroyRef)

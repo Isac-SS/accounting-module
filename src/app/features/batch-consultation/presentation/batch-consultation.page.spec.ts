@@ -2,6 +2,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { Batch } from '../domain/batch';
+import { BatchConsultationStore } from '../application/batch-consultation.store';
 import { BatchConsultationPage } from './batch-consultation.page';
 
 const sampleBatch: Batch = {
@@ -32,6 +33,7 @@ describe('BatchConsultationPage', () => {
   afterEach(() => http.verify());
 
   it('loads and displays the first page of batches on entry', () => {
+    const store = TestBed.inject(BatchConsultationStore);
     const fixture = TestBed.createComponent(BatchConsultationPage);
     fixture.detectChanges();
 
@@ -42,6 +44,7 @@ describe('BatchConsultationPage', () => {
     request.flush({ items: [sampleBatch], total: 1, page: 1, pageSize: 10 });
     fixture.detectChanges();
 
+    expect(store.batches()).toEqual([sampleBatch]);
     const element = fixture.nativeElement as HTMLElement;
     expect(element.querySelector('tbody')?.textContent).toContain('1.387,50');
     expect(element.querySelector('tbody')?.textContent).toContain('Aberto');
