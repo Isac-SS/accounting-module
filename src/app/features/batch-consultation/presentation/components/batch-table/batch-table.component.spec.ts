@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { Batch } from '../domain/batch';
+import { Batch } from '../../../domain/batch';
 import { BatchTableComponent } from './batch-table.component';
 
 const batch: Batch = {
@@ -46,17 +46,23 @@ describe('BatchTableComponent', () => {
   it('shows loading, initial, and searched-empty states', () => {
     fixture.componentRef.setInput('loading', true);
     fixture.detectChanges();
-    expect(fixture.nativeElement.querySelector('[role="status"]')?.textContent).toContain('Carregando lotes');
+    expect(fixture.nativeElement.querySelector('[role="status"]')?.textContent).toContain(
+      'Carregando lotes',
+    );
     expect(fixture.nativeElement.querySelector('.empty-row')?.textContent).toContain('Aguarde');
 
     fixture.componentRef.setInput('loading', false);
     fixture.componentRef.setInput('hasSearched', false);
     fixture.detectChanges();
-    expect(fixture.nativeElement.querySelector('.empty-row')?.textContent).toContain('Informe os filtros');
+    expect(fixture.nativeElement.querySelector('.empty-row')?.textContent).toContain(
+      'Informe os filtros',
+    );
 
     fixture.componentRef.setInput('hasSearched', true);
     fixture.detectChanges();
-    expect(fixture.nativeElement.querySelector('.empty-row')?.textContent).toContain('Nenhum lote encontrado');
+    expect(fixture.nativeElement.querySelector('.empty-row')?.textContent).toContain(
+      'Nenhum lote encontrado',
+    );
   });
 
   it('emits changes for individual and visible row selection', () => {
@@ -68,7 +74,9 @@ describe('BatchTableComponent', () => {
     component.batchSelectionChange.subscribe((change) => selected.push(change));
     component.visibleSelectionChange.subscribe((checked) => visibleSelection.push(checked));
 
-    const checkboxes = fixture.nativeElement.querySelectorAll('input[type="checkbox"]') as NodeListOf<HTMLInputElement>;
+    const checkboxes = fixture.nativeElement.querySelectorAll(
+      'input[type="checkbox"]',
+    ) as NodeListOf<HTMLInputElement>;
     checkboxes[1].checked = true;
     checkboxes[1].dispatchEvent(new Event('change'));
     checkboxes[0].checked = true;

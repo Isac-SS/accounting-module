@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { Batch } from '../domain/batch';
+import { Batch } from '../../../domain/batch';
 import { BatchActionsComponent } from './batch-actions.component';
 
 const selectedOpenBatch: Batch = {
