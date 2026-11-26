@@ -1,37 +1,23 @@
 import { Component, inject, signal } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
-import { Batch, BatchEntry, BatchFilters, BatchStatus, BatchStatusFilter } from '../domain/batch';
-import { BatchConsultationStore, BATCH_PAGE_SIZE, INITIAL_BATCH_FILTERS } from '../application/batch-consultation.store';
+import { Batch, BatchEntry, BatchFilters, BatchStatus } from '../domain/batch';
+import { BatchConsultationStore } from '../application/batch-consultation.store';
+import { BatchActionsComponent } from './batch-actions.component';
 import { BatchEntryEditorComponent } from './batch-entry-editor.component';
-
-const statusLabels: Record<BatchStatus, string> = {
-  OPEN: 'Aberto',
-  SUBMITTED: 'Enviado',
-  CONFIRMED: 'Confirmado',
-};
-
-function orderedRange(fromName: string, toName: string): ValidatorFn {
-  return (control): ValidationErrors | null => {
-    const from = control.get(fromName)?.value as string | number | null;
-    const to = control.get(toName)?.value as string | number | null;
-    return from !== null && from !== '' && to !== null && to !== '' && from > to
-      ? { [`rangeOrder_${fromName}`]: { fromName, toName } }
-      : null;
-  };
-}
+import { BatchFilterFormComponent } from './batch-filter-form.component';
+import { BatchPaginationComponent } from './batch-pagination.component';
+import { BatchTableComponent } from './batch-table.component';
 
 @Component({
   selector: 'app-batch-consultation-page',
-  imports: [ReactiveFormsModule, BatchEntryEditorComponent],
+  imports: [BatchActionsComponent, BatchEntryEditorComponent, BatchFilterFormComponent, BatchPaginationComponent, BatchTableComponent],
   templateUrl: './batch-consultation.page.html',
   styleUrl: './batch-consultation.page.scss',
 })
 export class BatchConsultationPage {
   protected readonly store = inject(BatchConsultationStore);
-  private readonly formBuilder = inject(FormBuilder);
 
   protected readonly page = this.store.page;
-  protected readonly pageSize = BATCH_PAGE_SIZE;
+  protected readonly totalPages = this.store.totalPages;
   protected readonly batches = this.store.batches;
   protected readonly total = this.store.total;
   protected readonly loading = this.store.loading;
@@ -42,15 +28,12 @@ export class BatchConsultationPage {
   protected readonly canSubmit = this.store.canSubmit;
   protected readonly canConfirm = this.store.canConfirm;
   protected readonly allVisibleSelected = this.store.allVisibleSelected;
-  protected readonly totalPages = this.store.totalPages;
   protected readonly actionMessage = this.store.actionMessage;
   protected readonly actionError = this.store.actionError;
   protected readonly actionLoading = this.store.actionLoading;
   protected readonly editorSaving = this.store.editorSaving;
   protected readonly editorError = this.store.editorError;
-  protected readonly visibleStatuses = statusLabels;
 
-  protected readonly filtersExpanded = signal(true);
   protected readonly justificationOpen = signal(false);
   protected readonly deleteConfirmationOpen = signal(false);
   protected readonly editorOpen = signal(false);
@@ -58,51 +41,8 @@ export class BatchConsultationPage {
   protected readonly editorEntries = signal<BatchEntry[]>([]);
   private editorBatchId: number | null = null;
 
-  protected readonly form = this.formBuilder.group({
-    responsibleInstitution: this.formBuilder.nonNullable.control(INITIAL_BATCH_FILTERS.responsibleInstitution, [Validators.maxLength(60)]),
-    institution: this.formBuilder.nonNullable.control(INITIAL_BATCH_FILTERS.institution, [Validators.maxLength(60)]),
-    status: this.formBuilder.nonNullable.control<BatchStatusFilter>('ALL'),
-    idFrom: this.formBuilder.control<number | null>(null, [Validators.min(1)]),
-    idTo: this.formBuilder.control<number | null>(null, [Validators.min(1)]),
-    amountFrom: this.formBuilder.control<number | null>(null, [Validators.min(0)]),
-    amountTo: this.formBuilder.control<number | null>(null, [Validators.min(0)]),
-    entryDateFrom: this.formBuilder.nonNullable.control(''),
-    entryDateTo: this.formBuilder.nonNullable.control(''),
-  }, {
-    validators: [
-      orderedRange('idFrom', 'idTo'),
-      orderedRange('amountFrom', 'amountTo'),
-      orderedRange('entryDateFrom', 'entryDateTo'),
-    ],
-  });
-
-  protected submit(): void {
-    if (this.form.invalid) {
-      this.form.markAllAsTouched();
-      return;
-    }
-
-    const values = this.form.getRawValue();
-    const filters: BatchFilters = {
-      responsibleInstitution: values.responsibleInstitution.trim(),
-      institution: values.institution.trim(),
-      status: values.status,
-      idFrom: values.idFrom,
-      idTo: values.idTo,
-      amountFromCents: this.toCents(values.amountFrom),
-      amountToCents: this.toCents(values.amountTo),
-      entryDateFrom: values.entryDateFrom,
-      entryDateTo: values.entryDateTo,
-    };
+  protected search(filters: BatchFilters): void {
     this.store.search(filters);
-  }
-
-  protected clear(): void {
-    this.form.reset({
-      responsibleInstitution: '', institution: '', status: 'ALL',
-      idFrom: null, idTo: null, amountFrom: null, amountTo: null,
-      entryDateFrom: '', entryDateTo: '',
-    });
   }
 
   protected goToPage(page: number): void {
@@ -175,20 +115,4 @@ export class BatchConsultationPage {
     this.store.deleteSelected(() => this.deleteConfirmationOpen.set(false));
   }
 
-  protected formatAmount(amountCents: number): string {
-    return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(amountCents / 100);
-  }
-
-  protected formatDate(date: string): string {
-    const [year, month, day] = date.split('-');
-    return `${day}/${month}/${year}`;
-  }
-
-  protected formatDateTime(dateTime: string): string {
-    return new Intl.DateTimeFormat('pt-BR', { dateStyle: 'short', timeStyle: 'short' }).format(new Date(dateTime));
-  }
-
-  private toCents(value: number | null): number | null {
-    return value === null ? null : Math.round(value * 100);
-  }
 }

@@ -1,0 +1,18 @@
+.button {
+  min-height: 34px;
+  padding: 6px 14px;
+  border: 1px solid #d6dfdc;
+  border-radius: 5px;
+  color: #263330;
+  background: #fff;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 650;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.button:hover:not(:disabled) { border-color: #17645e; }
+.button:disabled { opacity: .55; cursor: not-allowed; }
+.button-primary { border-color: #17645e; color: #fff; background: #17645e; }
+.batch-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px; }
