@@ -1,0 +1,110 @@
+<dialog #dialog class="editor-dialog" aria-labelledby="editor-title" (keydown)="closeOnEscape($event)">
+  <section class="editor-content">
+    <header class="editor-heading">
+      <div>
+        <h2 id="editor-title">{{ readOnly() ? 'Lançamentos do lote' : 'Editar lançamentos' }}</h2>
+        <p>Os lançamentos só serão enviados ao salvar o lote.</p>
+      </div>
+      <button type="button" class="icon-button" aria-label="Fechar editor" autofocus (click)="cancelEdit()">×</button>
+    </header>
+
+    @if (optionsError()) {
+      <p class="editor-alert" role="alert">Não foi possível carregar os históricos e pontos de atendimento. Verifique se a API está disponível.</p>
+    }
+    @if (apiError) { <p class="editor-alert" role="alert">{{ apiError }}</p> }
+
+    <form class="entry-form" [formGroup]="form" (ngSubmit)="addOrUpdateRow()" novalidate>
+      <div class="field account-field">
+        <label for="entry-account">Conta corrente</label>
+        <input id="entry-account" type="text" inputmode="numeric" maxlength="5" formControlName="accountNumber" />
+        @if (accountLookup() === 'checking') { <span class="hint">Consultando conta…</span> }
+        @if (accountLookup() === 'found') { <span class="hint success">Titular: {{ accountHolder() }}</span> }
+        @if (accountLookup() === 'not-found') { <span class="hint error">Conta corrente não encontrada.</span> }
+        @if (accountLookup() === 'unavailable') { <span class="hint error">Falha ao consultar a conta corrente.</span> }
+        @if (form.controls.accountNumber.touched && form.controls.accountNumber.invalid) { <span class="hint error">Informe uma conta com 5 dígitos.</span> }
+      </div>
+      <div class="field">
+        <label for="entry-amount">Valor (R$)</label>
+        <input
+          id="entry-amount"
+          type="text"
+          inputmode="numeric"
+          [attr.maxlength]="amountMaxLength"
+          [value]="form.controls.amount.value | brlCurrency"
+          (input)="onAmountInput($event)"
+          (blur)="form.controls.amount.markAsTouched()"
+        />
+        @if (form.controls.amount.touched && form.controls.amount.hasError('centPrecision')) { <span class="hint error">Informe no máximo duas casas decimais.</span> }
+      </div>
+      <div class="field">
+        <label for="entry-history">Histórico</label>
+        <select id="entry-history" formControlName="history">
+          <option value="">Selecione</option>
+          @for (history of options().histories; track history) { <option [value]="history">{{ history }}</option> }
+        </select>
+      </div>
+      <label class="check-field"><input type="checkbox" formControlName="reversal" /> Estorno</label>
+      <div class="field">
+        <label for="entry-document">Documento</label>
+        <input id="entry-document" type="text" maxlength="20" formControlName="document" />
+      </div>
+      <div class="field">
+        <label for="entry-service-point">PA</label>
+        <select id="entry-service-point" formControlName="servicePoint">
+          <option value="">Selecione</option>
+          @for (servicePoint of options().servicePoints; track servicePoint) { <option [value]="servicePoint">{{ servicePoint }}</option> }
+        </select>
+      </div>
+      <div class="field description-field">
+        <label for="entry-description">Descrição</label>
+        <input id="entry-description" type="text" maxlength="200" formControlName="description" />
+      </div>
+      <div class="field status-field">
+        <label for="entry-status">Situação</label>
+        <input id="entry-status" type="text" value="Pendente" readonly />
+      </div>
+      @if (!readOnly()) {
+        <button class="button button-primary row-submit" type="submit">{{ selectedIndex() === null ? 'Adicionar lançamento' : 'Atualizar lançamento' }}</button>
+      }
+    </form>
+
+    @if (rowError(); as error) { <p class="editor-alert" role="alert">{{ error }}</p> }
+
+    <div class="rows-heading">
+      <h3>Lançamentos ({{ rows().length }})</h3>
+      <strong>Total: {{ formatAmount(totalCents()) }}</strong>
+    </div>
+    <div class="table-scroll">
+      <table>
+        <caption class="visually-hidden">Lançamentos locais do lote</caption>
+        <thead><tr><th>Conta</th><th>Titular</th><th class="number">Valor</th><th>Histórico</th><th>Estorno</th><th>Documento</th><th>Situação</th><th>PA</th><th>Ações</th></tr></thead>
+        <tbody>
+          @for (row of rows(); track row.id; let index = $index) {
+            <tr [class.selected-row]="selectedIndex() === index">
+              <td>{{ row.accountNumber }}</td><td>{{ row.accountHolder }}</td><td class="number">{{ formatAmount(row.amountCents) }}</td>
+              <td>{{ row.history }}</td><td>{{ row.reversal ? 'Sim' : 'Não' }}</td><td>{{ row.document }}</td><td>Pendente</td><td>{{ row.servicePoint }}</td>
+              <td class="row-actions">
+                @if (readOnly()) {
+                  <button type="button" (click)="selectRow(index)">Visualizar</button>
+                } @else {
+                  <button type="button" (click)="selectRow(index)">Editar</button>
+                  <button type="button" (click)="duplicateRow(index)">Duplicar</button>
+                  <button type="button" (click)="removeRow(index)">Excluir</button>
+                }
+              </td>
+            </tr>
+          } @empty {
+            <tr><td colspan="9" class="empty-row">Nenhum lançamento adicionado.</td></tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <footer class="editor-actions">
+      <button type="button" class="button" (click)="cancelEdit()">{{ readOnly() ? 'Fechar' : 'Cancelar' }}</button>
+      @if (!readOnly()) {
+        <button type="button" class="button button-primary" [disabled]="saving || rows().length === 0" (click)="submit()">{{ saving ? 'Salvando…' : 'Salvar lote' }}</button>
+      }
+    </footer>
+  </section>
+</dialog>
